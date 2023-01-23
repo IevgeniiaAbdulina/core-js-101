@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* ************************************************************************************************
  *                                                                                                *
  * Please read the following tutorial before implementing tasks:                                   *
@@ -28,8 +29,16 @@
  *      .catch((error) => console.log(error.message)) // 'Error: Wrong parameter is passed!
  *                                                    //  Ask her again.';
  */
-function willYouMarryMe(/* isPositiveAnswer */) {
-  throw new Error('Not implemented');
+function willYouMarryMe(isPositiveAnswer) {
+  return new Promise((resolve, reject) => {
+    if (!!isPositiveAnswer === isPositiveAnswer && isPositiveAnswer) {
+      resolve('Hooray!!! She said "Yes"!');
+    } else if (!!isPositiveAnswer === isPositiveAnswer && !isPositiveAnswer) {
+      resolve('Oh no, she said "No".');
+    } else if (typeof isPositiveAnswer !== 'boolean') {
+      reject(Error('Wrong parameter is passed! Ask her again.'));
+    }
+  });
 }
 
 
@@ -48,8 +57,8 @@ function willYouMarryMe(/* isPositiveAnswer */) {
  *    })
  *
  */
-function processAllPromises(/* array */) {
-  throw new Error('Not implemented');
+function processAllPromises(array) {
+  return Promise.all(array);
 }
 
 /**
@@ -71,8 +80,8 @@ function processAllPromises(/* array */) {
  *    })
  *
  */
-function getFastestPromise(/* array */) {
-  throw new Error('Not implemented');
+function getFastestPromise(array) {
+  return Promise.race(array);
 }
 
 /**
@@ -92,8 +101,33 @@ function getFastestPromise(/* array */) {
  *    });
  *
  */
+
+// function promiseArraySolver(array) {
+//   const container = [];
+
+//   return new Promise((resolve, reject) => {
+//     let totalPromises = array.length;
+
+//     array.forEach((a) => {
+//       a.then((r) => {
+//         container.push(r);
+//         totalPromises -= 1;
+//         if (totalPromises === 0) {
+//           resolve(container);
+//         } else {
+//           reject(new Error(`Something went wrong with ${container}`));
+//         }
+//       });
+//     });
+//   });
+// }
+
 function chainPromises(/* array, action */) {
   throw new Error('Not implemented');
+
+  // return Promise.resolve(array.map((elem) => elem.then((res) => res.reduce(action))));
+  // throw new Error('Not implemented');
+  // return promiseArraySolver(array).then((results) => results.reduce(action));
 }
 
 module.exports = {

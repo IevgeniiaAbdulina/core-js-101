@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-param-reassign */
 /* *************************************************************************************************
  *                                                                                                *
@@ -28,36 +29,21 @@
  *  21 => 'Fizz'
  *
  */
-function getFizzBuzz(/* num */) {
-  // const myArr = [];
-  // for (let i = 2; i <= num; i += 1) {
-  //   if ((i % 3 === 0) && (i % 5 === 0)) {
-  //     myArr.push('FizzBuzz');
-  //   } else if (i % 3 === 0) {
-  //     myArr.push('Fizz');
-  //   } else if (i % 5 === 0) {
-  //     myArr.push('Buzz');
-  //   } else {
-  //     myArr.push(i);
-  //   }
-  // }
-  // return myArr;
-  // =================================
-  // let i = 1;
-  // const arr = [];
+function getFizzBuzz(num) {
+  let res = null;
 
-  // while (i <= num) {
-  //   const fizz = (i % 3 === 0);
-  //   const buzz = (i % 5 === 0);
-  //   if (fizz || buzz) {
-  //     arr.push((fizz ? 'Fizz' : '') + (buzz ? 'Buzz' : ''));
-  //   } else {
-  //     arr.push(i);
-  //   }
-  //   i += 1;
-  // }
-  // return arr;
-  throw new Error('Not implemented');
+  for (let i = 1; i <= num; i += 1) {
+    if ((i % 3 === 0) && (i % 5 === 0)) {
+      res = 'FizzBuzz';
+    } else if (i % 3 === 0) {
+      res = 'Fizz';
+    } else if (i % 5 === 0) {
+      res = 'Buzz';
+    } else {
+      res = i;
+    }
+  }
+  return res;
 }
 
 
@@ -184,17 +170,14 @@ function doRectanglesOverlap(/* rect1, rect2 */) {
  *   { center: { x:0, y:0 }, radius:10 },  { x:10, y:10 }   => false
  *
  */
-function isInsideCircle(/* circle, point */) {
-  throw new Error('Not implemented');
-  // const circle_x = circle.x;
-  // const circle_y= circle.y;
-  // const x = point.x;
-  // const y = point.y;
-  // const rad = circle.radius;
+function isInsideCircle(circle, point) {
+  const circleX = circle.center.x;
+  const circleY = circle.center.y;
+  const x = point.x;
+  const y = point.y;
+  const rad = circle.radius;
 
-  // if ((x - circle_x) * (x - circle_x) +
-  // (y - circle_y) * (y - circle_y) <= rad * rad) return true;
-  // return false;
+  return (x - circleX) ** 2 + (y - circleY) ** 2 < rad ** 2;
 }
 
 
@@ -307,28 +290,33 @@ function reverseInteger(num) {
  *   79927398713      => true
  *   4012888888881881 => true
  *   5123456789012346 => true
- *   378282246310005  => true
+ *   378282246310005  => truecc
  *   371449635398431  => true
  *
  *   4571234567890111 => false
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
-  // let sum = 0;
-  // const num = String(ccn);
-  // for (let i = 0; i < num.length; i += 1) {
-  //   let intVal = parseInt(num.substring(i, 1), 10);
-  //   if (i % 2 === 0) {
-  //     intVal *= 2;
-  //     if (intVal > 9) {
-  //       intVal = 1 + (intVal % 10);
-  //     }
-  //   }
-  //   sum += intVal;
-  // }
-  // return (sum % 10) === 0;
+function isCreditCardNumber(ccn) {
+  const numbers = ccn.toString().split('').reverse().map((elem) => parseInt(elem, 10));
+  const controlNum = numbers[0];
+
+  numbers.shift();
+
+  const numVal = numbers.map((num, i) => {
+    if (i % 2 === 0) {
+      num *= 2;
+
+      if (num > 9) {
+        num = 1 + (num % 10);
+      }
+    }
+
+    return num;
+  });
+
+  const sum = numVal.reduce((a, b) => a + b);
+  return (10 - (sum % 10)) % 10 === controlNum;
 }
 
 /**
@@ -382,8 +370,61 @@ function getDigitalRoot(num) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+
+
+const brackets = ['()', '[]', '{}', '<>'];
+
+function areClosingBrackets(left, right) {
+  const pair = `${left}${right}`;
+  if (pair === '()') return true;
+  if (pair === '[]') return true;
+  if (pair === '{}') return true;
+  if (pair === '<>') return true;
+  return false;
+}
+
+// reomves all close pairs
+function simplify(str) {
+  brackets.forEach((pair) => {
+    str = str.replaceAll(pair, '');
+  });
+  return str;
+}
+
+function test(str) {
+  let modifiableString = String(str);
+
+  // first case: find nearest
+  while (modifiableString.length > 0) {
+    const lastIndex = modifiableString.length - 1;
+
+    const char = modifiableString.charAt(0);
+    const nextChar = modifiableString.charAt(1);
+    const lastChar = modifiableString.charAt(lastIndex);
+
+    // console.log(current:${char} next${nextChar} last${lastChar});
+
+    if (areClosingBrackets(char, nextChar) === true) {
+      modifiableString = modifiableString.slice(2);
+      // console.log('case #1:', modifiableString);
+    } else if (areClosingBrackets(char, lastChar) === true) {
+      modifiableString = modifiableString.slice(1, lastIndex);
+      // console.log('case #2:', modifiableString);
+    } else {
+      return false;
+    }
+  }
+  return true;
+}
+
+function isBracketsBalanced(str) {
+  // console.log('start:', str);
+  const simplerString = simplify(str);
+  if (simplerString.length === 0) {
+    return true;
+  }
+  // console.log(simpler string: ${simplerString});
+  return test(simplerString);
 }
 
 
